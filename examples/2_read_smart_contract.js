@@ -1,32 +1,35 @@
 const { ethers } = require("ethers");
+require("dotenv").config();
 
-const INFURA_ID = ''
-const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${INFURA_ID}`)
+const INFURA_ID = process.env.INFURA_ID;
+const provider = new ethers.providers.JsonRpcProvider(
+  `https://mainnet.infura.io/v3/${INFURA_ID}`
+);
 
 const ERC20_ABI = [
-    "function name() view returns (string)",
-    "function symbol() view returns (string)",
-    "function totalSupply() view returns (uint256)",
-    "function balanceOf(address) view returns (uint)",
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint)",
 ];
 
-const address = '0x6B175474E89094C44Da98b954EedeAC495271d0F' // DAI Contract
-const contract = new ethers.Contract(address, ERC20_ABI, provider)
+const address = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"; //USDC contract address
+const contract = new ethers.Contract(address, ERC20_ABI, provider);
 
 const main = async () => {
-    const name = await contract.name()
-    const symbol = await contract.symbol()
-    const totalSupply = await contract.totalSupply()
+  const name = await contract.name();
+  const symbol = await contract.symbol();
+  const totalSupply = await contract.totalSupply();
 
-    console.log(`\nReading from ${address}\n`)
-    console.log(`Name: ${name}`)
-    console.log(`Symbol: ${symbol}`)
-    console.log(`Total Supply: ${totalSupply}\n`)
+  console.log("name: ", name);
+  console.log("symbol: ", symbol);
+  console.log("total supply: ", ethers.utils.formatUnits(totalSupply, 6));
 
-    const balance = await contract.balanceOf('0x6c6Bc977E13Df9b0de53b251522280BB72383700')
+  const balanceOf = await contract.balanceOf(
+    "0xc198e68528D2a5A08Affe030d19d3E23F2cb13e0" //random ethereum address
+  );
 
-    console.log(`Balance Returned: ${balance}`)
-    console.log(`Balance Formatted: ${ethers.utils.formatEther(balance)}\n`)
-}
+  console.log("balance of is: ", ethers.utils.formatUnits(balanceOf, 6));
+};
 
-main()
+main();
